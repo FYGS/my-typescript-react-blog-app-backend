@@ -19,10 +19,10 @@ app.post('/api/articles/:name/upvote', (request: Request, response: Response) =>
 
   if (article !== undefined) {
     article.upvotes += 1;
-    response.status(200).send(`${name} now has ${article.upvotes} upvotes`);
+    return response.status(200).send(`${name} now has ${article.upvotes} upvotes`);
   }
 
-  response.status(404).send('Article not found');
+  return response.status(404).send('Article not found');
 });
 
 app.post('/api/articles/:name/add-comment', (request: Request, response: Response) => {
@@ -32,10 +32,10 @@ app.post('/api/articles/:name/add-comment', (request: Request, response: Respons
 
   if (article !== undefined) {
     article.comments.push({ username, text });
-    response.status(200).send(article);
+    return response.status(200).send(article);
   }
 
-  response.status(404).send('Article not found');
+  return response.status(404).send('Article not found');
 });
 
 app.listen(PORT, () => {
