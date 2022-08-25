@@ -2,7 +2,8 @@ import express, { Express, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
-import { articlesInfo } from './data';
+
+import { ArticlesService, performDBOperation } from './data';
 
 dotenv.config();
 
@@ -13,29 +14,16 @@ app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post('/api/articles/:name/upvote', (request: Request, response: Response) => {
-  const { name } = request.params;
-  const article = articlesInfo[name];
-
-  if (article !== undefined) {
-    article.upvotes += 1;
-    return response.status(200).send(`${name} now has ${article.upvotes} upvotes`);
-  }
-
-  return response.status(404).send('Article not found');
+app.get('/api/articles/:name', async (request: Request, response: Response) => {
+  await performDBOperation(request, response, ArticlesService.findByName);
 });
 
-app.post('/api/articles/:name/add-comment', (request: Request, response: Response) => {
-  const { name } = request.params;
-  const article = articlesInfo[name];
-  const { username, text } = request.body;
+app.post('/api/articles/:name/upvote', async (request: Request, response: Response) => {
+  await performDBOperation(request, response, ArticlesService.upvote);
+});
 
-  if (article !== undefined) {
-    article.comments.push({ username, text });
-    return response.status(200).send(article);
-  }
-
-  return response.status(404).send('Article not found');
+app.post('/api/articles/:name/add-comment', async (request: Request, response: Response) => {
+  await performDBOperation(request, response, ArticlesService.addComment);
 });
 
 app.listen(PORT, () => {
