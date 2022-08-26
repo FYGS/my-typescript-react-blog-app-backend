@@ -5,10 +5,11 @@
 	"main": "index.js",
 	"scripts": {
 		"build": "rimraf dist && tsc",
-		"preserve": "npm run build",
-		"serve": "cross-env NODE_ENV=development concurrently \"tsc --watch\" \"nodemon -q dist/index.js\"",
-		"prestart": "npm run build",
-		"start": "cross-env NODE_ENV=production node dist/index.js",
+		"copy": "cp -r frontend/ dist/",
+		"preserve": "npm run build && npm run copy",
+		"serve": "cross-env NODE_ENV=development concurrently \"tsc --watch\" \"nodemon -q dist/backend/index.js\"",
+		"prestart": "npm run build && npm run copy",
+		"start": "cross-env NODE_ENV=production node dist/backend/index.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"keywords": [],
